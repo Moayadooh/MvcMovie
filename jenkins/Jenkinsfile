@@ -19,7 +19,10 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         sh '''
+          # API App
           docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
+
+          # Web App
           docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
         '''
       }
@@ -28,7 +31,10 @@ pipeline {
     stage('Push to Local Registry') {
       steps {
         sh '''
+          # API App
           docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
+
+          # Web App
           docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
         '''
       }
