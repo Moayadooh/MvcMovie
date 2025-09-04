@@ -16,7 +16,7 @@ pipeline {
 
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t $REGISTRY/$IMAGE_NAME:latest ./web-app'
+        sh 'docker build -t $REGISTRY/$IMAGE_NAME:latest .'
       }
     }
 
