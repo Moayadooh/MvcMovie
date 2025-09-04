@@ -31,7 +31,7 @@ artifacts/
 
 # ASP.NET Core
 wwwroot/dist/
-wwwroot/lib/
+# wwwroot/lib/
 appsettings.Development.json
 appsettings.Local.json
 secrets.json
