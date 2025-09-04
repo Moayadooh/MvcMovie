@@ -1,0 +1,38 @@
+pipeline {
+  agent any
+
+  environment {
+    REGISTRY = "localhost:5006"
+    IMAGE_NAME = "web-app"
+    CONTAINER_NAME = "web-app"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t $REGISTRY/$IMAGE_NAME:latest ./web-app'
+      }
+    }
+
+    stage('Push to Local Registry') {
+      steps {
+        sh 'docker push $REGISTRY/$IMAGE_NAME:latest'
+      }
+    }
+
+    stage('Deploy Container') {
+      steps {
+        sh '''
+          docker rm -f $CONTAINER_NAME || true
+          docker run -d --name $CONTAINER_NAME --network ${COMPOSE_PROJECT_NAME}_internal-network -p 5005:5005 $REGISTRY/$IMAGE_NAME:latest
+        '''
+      }
+    }
+  }
+}

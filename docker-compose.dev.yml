@@ -1,0 +1,58 @@
+services:
+  api-app:
+    build:
+      context: ../crud-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - internal-network
+
+  web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5005"
+    depends_on:
+      - api-app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - internal-network
+
+  # ✅ Local Docker Registry
+  registry:
+    image: registry:2
+    container_name: local-registry
+    restart: unless-stopped
+    ports:
+      - "5006:5000"  # Access via http://localhost:5006
+    volumes:
+      - registry-data:/var/lib/registry
+    networks:
+      - internal-network
+
+  # ✅ Jenkins
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    restart: unless-stopped
+    user: root
+    ports:
+      - "8080:8080"      # Jenkins UI
+      - "50000:50000"    # Jenkins agent port
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock  # Allow Jenkins to use Docker on the host
+      - ./jenkins:/jenkins                         # Optional: Jenkins pipeline files or jobs
+    networks:
+      - internal-network
+
+networks:
+  internal-network:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+  registry-data:
