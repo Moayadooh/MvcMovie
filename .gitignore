@@ -95,3 +95,5 @@ global.json.user
 
 # Ignore dump files
 *.dmp
+
+node_modules
