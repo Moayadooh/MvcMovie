@@ -3,8 +3,10 @@ pipeline {
 
   environment {
     REGISTRY = "localhost:5006"
-    IMAGE_NAME = "web-app"
-    CONTAINER_NAME = "web-app"
+    WEB_APP_IMAGE_NAME = "web-app"
+    WEB_APP_CONTAINER_NAME = "web-app"
+    API_APP_IMAGE_NAME = "api-app"
+    API_APP_CONTAINER_NAME = "api-app"
   }
 
   stages {
@@ -16,13 +18,19 @@ pipeline {
 
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t $REGISTRY/$IMAGE_NAME:latest .'
+        sh '''
+          docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ../crud-api
+          docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
+        '''
       }
     }
 
     stage('Push to Local Registry') {
       steps {
-        sh 'docker push $REGISTRY/$IMAGE_NAME:latest'
+        sh '''
+          docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
+          docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
+        '''
       }
     }
 
@@ -34,11 +42,13 @@ pipeline {
 
           echo "Using network: $NETWORK_NAME"
           
-          # Stop and remove any old container
-          docker rm -f $CONTAINER_NAME || true
+          # Stop and remove any old containers
+          docker rm -f $API_APP_CONTAINER_NAME || true
+          docker rm -f $WEB_APP_CONTAINER_NAME || true
 
-          # Run the new container
-          docker run -d --name $CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$IMAGE_NAME:latest
+          # Run the new containers
+          docker run -d --name $API_APP_CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$API_APP_IMAGE_NAME:latest
+          docker run -d --name $WEB_APP_CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$WEB_APP_IMAGE_NAME:latest
         '''
       }
     }

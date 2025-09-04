@@ -1,12 +1,12 @@
 services:
-  api-app:
-    build:
-      context: ../crud-api
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    networks:
-      - internal-network
+  # api-app:
+  #   build:
+  #     context: ../crud-api
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - internal-network
 
   # web-app:
   #   build:
