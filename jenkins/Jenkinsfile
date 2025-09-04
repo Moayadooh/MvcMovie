@@ -29,8 +29,16 @@ pipeline {
     stage('Deploy Container') {
       steps {
         sh '''
+          # Dynamically find the Docker network name
+          NETWORK_NAME=$(docker network ls --format "{{.Name}}" | grep internal-network | head -n 1)
+
+          echo "Using network: $NETWORK_NAME"
+          
+          # Stop and remove any old container
           docker rm -f $CONTAINER_NAME || true
-          docker run -d --name $CONTAINER_NAME --network _internal-network -p 5005:5005 $REGISTRY/$IMAGE_NAME:latest
+
+          # Run the new container
+          docker run -d --name $CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$IMAGE_NAME:latest
         '''
       }
     }
