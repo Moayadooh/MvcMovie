@@ -1,0 +1,31 @@
+# Build artifacts
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE files
+.vscode/
+.idea/
+.vs/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Logs and temp
+*.log
+*.tmp
+*.bak
+
+# Git
+.git/
+.gitignore
