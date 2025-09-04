@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+      docker {
+          image 'docker:24-cli'  // Docker-in-Docker image
+          args '-v /var/run/docker.sock:/var/run/docker.sock'
+      }
+  }
 
   environment {
     REGISTRY = "localhost:5006"
@@ -7,13 +12,6 @@ pipeline {
     WEB_APP_CONTAINER_NAME = "web-app"
     API_APP_IMAGE_NAME = "api-app"
     API_APP_CONTAINER_NAME = "api-app"
-  }
-
-  agent {
-      docker {
-          image 'docker:24.0.5-dind'  // Docker-in-Docker image
-          args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
-      }
   }
 
   stages {
@@ -52,7 +50,7 @@ pipeline {
         sh '''
           # Dynamically find the Docker network name
           NETWORK_NAME=$(docker network ls --format "{{.Name}}" | grep internal-network | head -n 1)
-
+          docker network inspect $NETWORK_NAME >/dev/null 2>&1 || docker network create $NETWORK_NAME
           echo "Using network: $NETWORK_NAME"
           
           # Stop and remove any old containers
