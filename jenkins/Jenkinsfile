@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-      docker {
-          image 'docker:24.0.5-dind'  // Docker-in-Docker image
-          args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
-      }
-  }
+  agent any
 
   environment {
     REGISTRY = "localhost:5006"
@@ -12,6 +7,13 @@ pipeline {
     WEB_APP_CONTAINER_NAME = "web-app"
     API_APP_IMAGE_NAME = "api-app"
     API_APP_CONTAINER_NAME = "api-app"
+  }
+
+  agent {
+      docker {
+          image 'docker:24.0.5-dind'  // Docker-in-Docker image
+          args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+      }
   }
 
   stages {
