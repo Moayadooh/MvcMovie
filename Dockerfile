@@ -21,6 +21,7 @@ WORKDIR /app
 
 # Environment config
 ENV ASPNETCORE_URLS=http://+:5005
+ENV ASPNETCORE_ENVIRONMENT=Development
 EXPOSE 5005
 
 # Copy only published output
