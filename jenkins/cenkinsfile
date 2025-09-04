@@ -30,7 +30,7 @@ pipeline {
       steps {
         sh '''
           docker rm -f $CONTAINER_NAME || true
-          docker run -d --name $CONTAINER_NAME --network ${COMPOSE_PROJECT_NAME}_internal-network -p 5005:5005 $REGISTRY/$IMAGE_NAME:latest
+          docker run -d --name $CONTAINER_NAME --network _internal-network -p 5005:5005 $REGISTRY/$IMAGE_NAME:latest
         '''
       }
     }
