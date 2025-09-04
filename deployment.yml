@@ -50,4 +50,6 @@ spec:
           #     value: "Production"
 
 # kubectl apply -f deployment.yml
-# minikube service web-app-service
+
+# kubectl create deployment api-app --image=muayadoh/api-app:latest
+# kubectl create deployment web-app --image=muayadoh/web-app:latest

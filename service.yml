@@ -30,4 +30,9 @@ spec:
       targetPort: 5005
 
 # kubectl apply -f service.yml
+
 # minikube service api-app-service
+# minikube service web-app-service
+
+# kubectl expose deployment api-app --type=LoadBalancer --port=3000
+# kubectl expose deployment web-app --type=LoadBalancer --port=5005
