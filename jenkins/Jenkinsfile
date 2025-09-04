@@ -47,7 +47,7 @@ pipeline {
           docker rm -f $WEB_APP_CONTAINER_NAME || true
 
           # Run the new containers
-          docker run -d --name $API_APP_CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$API_APP_IMAGE_NAME:latest
+          docker run -d --name $API_APP_CONTAINER_NAME --network $NETWORK_NAME -p 3000:3000 $REGISTRY/$API_APP_IMAGE_NAME:latest
           docker run -d --name $WEB_APP_CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$WEB_APP_IMAGE_NAME:latest
         '''
       }
