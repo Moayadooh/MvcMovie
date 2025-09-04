@@ -8,18 +8,18 @@ services:
     networks:
       - internal-network
 
-  web-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5005:5005"
-    depends_on:
-      - api-app
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    networks:
-      - internal-network
+  # web-app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5005:5005"
+  #   depends_on:
+  #     - api-app
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   networks:
+  #     - internal-network
 
   # ✅ Local Docker Registry
   registry:
