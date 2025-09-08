@@ -18,41 +18,51 @@ pipeline {
       }
     }
 
-    stage('Docker Login') {
+    stage('Docker Login, Build & Push') {
       steps {
         script {
-          // Docker login using Jenkins stored credentials
-          withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'muayadoh', passwordVariable: 'dckr_pat_qW5hLWX9CAkYeg1tTP6xP8ih1h0')]) {
-            sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+          echo "Logging in, building, and pushing images to Docker Hub..."
+
+          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+
+            // Build API image
+            sh "docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api"
+
+            // Build Web image
+            sh "docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest ."
+
+            // Push both images
+            sh "docker push $REGISTRY/$API_APP_IMAGE_NAME:latest"
+            sh "docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest"
           }
         }
       }
     }
 
-    stage('Build Docker Images') {
-      steps {
-        sh '''
-          echo "Building Docker Images..."
+    // stage('Build Docker Images') {
+    //   steps {
+    //     sh '''
+    //       echo "Building Docker Images..."
 
-          # Build API App image
-          docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
+    //       # Build API App image
+    //       docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
 
-          # Build Web App image
-          docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
-        '''
-      }
-    }
+    //       # Build Web App image
+    //       docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
+    //     '''
+    //   }
+    // }
 
-    stage('Push to Registry') {
-      steps {
-        sh '''
-          echo "Pushing Docker Images to Registry..."
+    // stage('Push to Registry') {
+    //   steps {
+    //     sh '''
+    //       echo "Pushing Docker Images to Registry..."
 
-          docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
-          docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
-        '''
-      }
-    }
+    //       docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
+    //       docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
+    //     '''
+    //   }
+    // }
 
     stage('Deploy to Kubernetes') {
       steps {
