@@ -21,9 +21,9 @@ pipeline {
     stage('Docker Login') {
       steps {
         script {
-          // This logs Jenkins into Docker Hub using stored credentials
-          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-            echo "Successfully logged into Docker Hub!"
+          // Docker login using Jenkins stored credentials
+          withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'muayadoh', passwordVariable: 'dckr_pat_qW5hLWX9CAkYeg1tTP6xP8ih1h0')]) {
+            sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
           }
         }
       }
