@@ -18,6 +18,17 @@ pipeline {
       }
     }
 
+    stage('Docker Login') {
+      steps {
+        script {
+          // This logs Jenkins into Docker Hub using stored credentials
+          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+            echo "Successfully logged into Docker Hub!"
+          }
+        }
+      }
+    }
+
     stage('Build Docker Images') {
       steps {
         sh '''
