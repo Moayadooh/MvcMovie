@@ -29,3 +29,6 @@ desktop.ini
 # Git
 .git/
 .gitignore
+
+# ignore API app
+crud-api

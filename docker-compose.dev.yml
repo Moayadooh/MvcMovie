@@ -22,16 +22,16 @@ services:
   #     - internal-network
 
   # ✅ Local Docker Registry
-  registry:
-    image: registry:2
-    container_name: local-registry
-    restart: unless-stopped
-    ports:
-      - "5006:5000"  # Access via http://localhost:5006
-    volumes:
-      - registry-data:/var/lib/registry
-    networks:
-      - internal-network
+  # registry:
+  #   image: registry:2
+  #   container_name: local-registry
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5006:5000"  # Access via http://localhost:5006
+  #   volumes:
+  #     - registry-data:/var/lib/registry
+  #   networks:
+  #     - internal-network
 
   # ✅ Jenkins
   jenkins:

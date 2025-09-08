@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: web-app
-          image: muayadoh/web-app:latest
+          image: muayadoh/web-app:3
           ports:
             - containerPort: 5005
           # env:
