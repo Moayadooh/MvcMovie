@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    REGISTRY = "docker.io/muayadoh"
+    REGISTRY = "localhost:5006"
     WEB_APP_IMAGE_NAME = "web-app"
     API_APP_IMAGE_NAME = "api-app"
 
@@ -18,51 +18,51 @@ pipeline {
       }
     }
 
-    stage('Docker Login, Build & Push') {
+    // stage('Docker Login, Build & Push') {
+    //   steps {
+    //     script {
+    //       echo "Logging in, building, and pushing images to Docker Hub..."
+
+    //       docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+
+    //         // Build API image
+    //         sh "docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api"
+
+    //         // Build Web image
+    //         sh "docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest ."
+
+    //         // Push both images
+    //         sh "docker push $REGISTRY/$API_APP_IMAGE_NAME:latest"
+    //         sh "docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest"
+    //       }
+    //     }
+    //   }
+    // }
+
+    stage('Build Docker Images') {
       steps {
-        script {
-          echo "Logging in, building, and pushing images to Docker Hub..."
+        sh '''
+          echo "Building Docker Images..."
 
-          docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+          # Build API App image
+          docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
 
-            // Build API image
-            sh "docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api"
-
-            // Build Web image
-            sh "docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest ."
-
-            // Push both images
-            sh "docker push $REGISTRY/$API_APP_IMAGE_NAME:latest"
-            sh "docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest"
-          }
-        }
+          # Build Web App image
+          docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
+        '''
       }
     }
 
-    // stage('Build Docker Images') {
-    //   steps {
-    //     sh '''
-    //       echo "Building Docker Images..."
+    stage('Push to Registry') {
+      steps {
+        sh '''
+          echo "Pushing Docker Images to Registry..."
 
-    //       # Build API App image
-    //       docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
-
-    //       # Build Web App image
-    //       docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
-    //     '''
-    //   }
-    // }
-
-    // stage('Push to Registry') {
-    //   steps {
-    //     sh '''
-    //       echo "Pushing Docker Images to Registry..."
-
-    //       docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
-    //       docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
-    //     '''
-    //   }
-    // }
+          docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
+          docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
+        '''
+      }
+    }
 
     stage('Deploy to Kubernetes') {
       steps {
