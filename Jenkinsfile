@@ -45,7 +45,7 @@ pipeline {
           echo "Building Docker Images..."
 
           # Build API App image
-          docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
+          docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest .
 
           # Build Web App image
           docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .

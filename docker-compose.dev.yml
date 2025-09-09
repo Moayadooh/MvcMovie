@@ -27,7 +27,7 @@ services:
     container_name: local-registry
     restart: unless-stopped
     ports:
-      - "5006:5000"  # Access via http://localhost:5006
+      - "5006:5000"  # Access via http://localhost:5006/v2/_catalog
     volumes:
       - registry-data:/var/lib/registry
     networks:
