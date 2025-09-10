@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      # Run as root for Docker & kubectl access
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: jenkins
+          image: jenkins:latest  # Use the Dockerfile image we built
+          ports:
+            - containerPort: 8080
+            - containerPort: 50000
+          volumeMounts:
+            # Persistent Jenkins home
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            # Docker socket (for Docker commands inside Jenkins)
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            # Kube config
+            - name: kube-config
+              mountPath: /var/jenkins_home/.kube
+            # Minikube profiles (if needed)
+            - name: minikube
+              mountPath: /var/jenkins_home/.minikube
+          env:
+            - name: KUBECONFIG
+              value: /var/jenkins_home/.kube/config
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker.sock
+
+      volumes:
+        - name: jenkins-home
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: kube-config
+          hostPath:
+            path: /Users/muayad/.kube  # adapt path to cluster
+        - name: minikube
+          hostPath:
+            path: /Users/muayad/.minikube  # adapt path to cluster
+
+# kubectl apply -f jenkins-pvc.yml
+# kubectl apply -f jenkins-deployment.yml
+# kubectl apply -f jenkins-service.yml
