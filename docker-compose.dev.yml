@@ -55,10 +55,12 @@ services:
       - ./jenkins:/jenkins
 
       # Kube config (read-only)
-      - ~/.kube:/root/.kube:ro
+      - /Users/muayad/.kube:/home/jenkins/.kube:ro
 
       # Minikube profiles and certs (read-only)
-      - ~/.minikube:/root/.minikube:ro
+      - /Users/muayad/.minikube:/home/jenkins/.minikube:ro
+
+      - /Users/muayad/.kube/config:/var/jenkins_home/.kube/config:ro
 
     environment:
       - KUBECONFIG=/root/.kube/config
