@@ -26,9 +26,6 @@ pipeline {
         sh '''
           echo "Building Docker Images..."
 
-          # Set Docker to use Minikube daemon
-          eval $(minikube -p minikube docker-env)
-
           # Build API App image
           docker build -t $API_APP_IMAGE_NAME:latest ./crud-api
 
