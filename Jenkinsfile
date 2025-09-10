@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    REGISTRY = "localhost:53958"
+    REGISTRY = "local-registry:5000"
     WEB_APP_IMAGE_NAME = "web-app"
     API_APP_IMAGE_NAME = "api-app"
 
