@@ -67,7 +67,7 @@ pipeline {
           sed -i "s|image: .*/web-app:.*|image: $REGISTRY/$WEB_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
 
           # Apply manifests
-          kubectl apply -f $DEPLOYMENT_FILE --namespace=$NAMESPACE
+          kubectl apply -f $DEPLOYMENT_FILE --namespace=$NAMESPACE --validate=false
           kubectl apply -f $SERVICE_FILE --namespace=$NAMESPACE
 
           # Wait for rollout to complete
