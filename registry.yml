@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: local-registry
 spec:
+  type: NodePort
+  ports:
+    - port: 5000
+      nodePort: 30000
   selector:
     app: local-registry
-  ports:
-    - protocol: TCP
-      port: 5000
-      targetPort: 5000
 ---
 apiVersion: apps/v1
 kind: Deployment
