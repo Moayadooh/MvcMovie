@@ -9,6 +9,9 @@ pipeline {
     DEPLOYMENT_FILE = "deployment.yml"
     SERVICE_FILE = "service.yml"
     NAMESPACE = "default"
+
+    # Use mounted kubeconfig in Jenkins container
+    KUBECONFIG = "/root/.kube/config"
   }
 
   stages {
@@ -18,46 +21,33 @@ pipeline {
       }
     }
 
-    // stage('Docker Login, Build & Push') {
-    //   steps {
-    //     script {
-    //       echo "Logging in, building, and pushing images to Docker Hub..."
-
-    //       docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-
-    //         // Build API image
-    //         sh "docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api"
-
-    //         // Build Web image
-    //         sh "docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest ."
-
-    //         // Push both images
-    //         sh "docker push $REGISTRY/$API_APP_IMAGE_NAME:latest"
-    //         sh "docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest"
-    //       }
-    //     }
-    //   }
-    // }
-
     stage('Build Docker Images') {
       steps {
         sh '''
           echo "Building Docker Images..."
 
+          # Set Docker to use Minikube daemon
+          eval $(minikube -p minikube docker-env)
+
           # Build API App image
-          docker build -t $REGISTRY/$API_APP_IMAGE_NAME:latest ./crud-api
+          docker build -t $API_APP_IMAGE_NAME:latest ./crud-api
 
           # Build Web App image
-          docker build -t $REGISTRY/$WEB_APP_IMAGE_NAME:latest .
+          docker build -t $WEB_APP_IMAGE_NAME:latest .
         '''
       }
     }
 
-    stage('Push to Registry') {
+    stage('Push to Local Registry') {
       steps {
         sh '''
-          echo "Pushing Docker Images to Registry..."
+          echo "Tagging and pushing Docker images to local registry..."
 
+          # Tag images for local registry
+          docker tag $API_APP_IMAGE_NAME:latest $REGISTRY/$API_APP_IMAGE_NAME:latest
+          docker tag $WEB_APP_IMAGE_NAME:latest $REGISTRY/$WEB_APP_IMAGE_NAME:latest
+
+          # Push to registry
           docker push $REGISTRY/$API_APP_IMAGE_NAME:latest
           docker push $REGISTRY/$WEB_APP_IMAGE_NAME:latest
         '''
@@ -69,15 +59,15 @@ pipeline {
         sh '''
           echo "Deploying to Kubernetes..."
 
-          # Update Kubernetes deployment file to use the latest images
+          # Update deployment file to use latest images
           sed -i "s|image: .*/api-app:.*|image: $REGISTRY/$API_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
           sed -i "s|image: .*/web-app:.*|image: $REGISTRY/$WEB_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
 
-          # Apply deployments and services
+          # Apply Kubernetes manifests
           kubectl apply -f $DEPLOYMENT_FILE --namespace=$NAMESPACE
           kubectl apply -f $SERVICE_FILE --namespace=$NAMESPACE
 
-          # Verify rollout status
+          # Wait for rollout to complete
           kubectl rollout status deployment/api-app --namespace=$NAMESPACE
           kubectl rollout status deployment/web-app --namespace=$NAMESPACE
         '''

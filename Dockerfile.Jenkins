@@ -1,0 +1,26 @@
+FROM jenkins/jenkins:lts-jdk17
+
+USER root
+
+# Install curl and dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    apt-transport-https \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install kubectl
+RUN curl -LO https://dl.k8s.io/release/v1.30.9/bin/linux/arm64/kubectl \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin/
+
+# Install Minikube
+RUN curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-arm64 \
+    && install minikube-linux-arm64 /usr/local/bin/minikube
+
+# Verify installations
+RUN kubectl version --client
+
+USER jenkins
