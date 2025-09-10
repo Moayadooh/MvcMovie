@@ -10,7 +10,7 @@ pipeline {
     SERVICE_FILE = "service.yml"
     NAMESPACE = "default"
 
-    // Use mounted kubeconfig in Jenkins container
+    // Path to kubeconfig mounted in Jenkins container
     KUBECONFIG = "/root/.kube/config"
   }
 
@@ -24,6 +24,7 @@ pipeline {
     stage('Build Docker Images') {
       steps {
         sh '''
+          set -e
           echo "Building Docker Images..."
 
           # Build API App image
@@ -38,6 +39,7 @@ pipeline {
     stage('Push to Local Registry') {
       steps {
         sh '''
+          set -e
           echo "Tagging and pushing Docker images to local registry..."
 
           # Tag images for local registry
@@ -54,19 +56,23 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         sh '''
+          set -e
           echo "Deploying to Kubernetes..."
 
-          # Update deployment file to use latest images
+          # Ensure kubeconfig is set
+          export KUBECONFIG=$KUBECONFIG
+
+          # Update deployment file with latest images
           sed -i "s|image: .*/api-app:.*|image: $REGISTRY/$API_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
           sed -i "s|image: .*/web-app:.*|image: $REGISTRY/$WEB_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
 
-          # Apply Kubernetes manifests
-          kubectl apply -f $DEPLOYMENT_FILE --namespace=$NAMESPACE --validate=false
-          kubectl apply -f $SERVICE_FILE --namespace=$NAMESPACE --validate=false
+          # Apply manifests
+          kubectl apply -f $DEPLOYMENT_FILE --namespace=$NAMESPACE
+          kubectl apply -f $SERVICE_FILE --namespace=$NAMESPACE
 
           # Wait for rollout to complete
-          kubectl rollout status deployment/api-app --namespace=$NAMESPACE
-          kubectl rollout status deployment/web-app --namespace=$NAMESPACE
+          kubectl rollout status deployment/api-app --namespace=$NAMESPACE --timeout=2m
+          kubectl rollout status deployment/web-app --namespace=$NAMESPACE --timeout=2m
         '''
       }
     }
