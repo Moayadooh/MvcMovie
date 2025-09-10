@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api-app
-          image: 127.0.0.1:53565/api-app:latest
+          image: 127.0.0.1:30000/api-app:latest
           ports:
             - containerPort: 3000
           # env:
@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: web-app
-          image: 127.0.0.1:53565/web-app:latest
+          image: 127.0.0.1:30000/web-app:latest
           ports:
             - containerPort: 5005
           # env:
