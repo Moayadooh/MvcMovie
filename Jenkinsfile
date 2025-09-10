@@ -10,7 +10,7 @@ pipeline {
     SERVICE_FILE = "service.yml"
     NAMESPACE = "default"
 
-    # Use mounted kubeconfig in Jenkins container
+    // Use mounted kubeconfig in Jenkins container
     KUBECONFIG = "/root/.kube/config"
   }
 
