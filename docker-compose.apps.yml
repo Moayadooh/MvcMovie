@@ -14,6 +14,9 @@ services:
       - web-app
     networks:
       - internal-network
+    ports:
+      - "80:80"
+      - "443:443"
 
   api-app:
     image: "${REGISTRY}/${API_APP_IMAGE_NAME}:latest"
