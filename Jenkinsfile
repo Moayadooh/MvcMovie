@@ -27,7 +27,7 @@ pipeline {
           echo "Building Docker Images..."
 
           # Build API App image
-          docker build -t $API_APP_IMAGE_NAME:latest -f Dockerfile.ApiApp ./crud-api
+          docker build -t $API_APP_IMAGE_NAME:latest -f ./crud-api/Dockerfile.ApiApp ./crud-api
 
           # Build Web App image
           docker build -t $WEB_APP_IMAGE_NAME:latest -f Dockerfile.WebApp .
