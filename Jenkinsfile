@@ -53,15 +53,15 @@ pipeline {
     }
 
     stage('Deploy Containers with Docker Compose') {
-        steps {
-            sh '''
-                echo "Bringing down old containers..."
-                docker compose -f docker-compose.apps.yml down
+      steps {
+          sh '''
+              echo "Bringing down old containers..."
+              docker compose -f docker-compose.apps.yml down
 
-                echo "Deploying new containers..."
-                docker compose -f docker-compose.apps.yml up -d --build
-            '''
-        }
+              echo "Deploying new containers..."
+              docker compose -f docker-compose.apps.yml up -d --build
+          '''
+      }
     }
   }
 }

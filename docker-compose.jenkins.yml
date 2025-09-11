@@ -28,28 +28,6 @@ services:
       - ./jenkins:/jenkins                         # Optional: Jenkins pipeline files or jobs
     networks:
       - internal-network
-  
-  # api-app:
-  #   build:
-  #     context: ./crud-api
-  #     dockerfile: Dockerfile.ApiApp
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - internal-network
-
-  # web-app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.WebApp
-  #   ports:
-  #     - "5005:5005"
-  #   depends_on:
-  #     - api-app
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #   networks:
-  #     - internal-network
 
 networks:
   internal-network:
