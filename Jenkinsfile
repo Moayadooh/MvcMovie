@@ -2,16 +2,15 @@ pipeline {
   agent any
 
   environment {
-    REGISTRY = "127.0.0.1:30000"
+    REGISTRY = "localhost:5006"
+
+    // Images names
     WEB_APP_IMAGE_NAME = "web-app"
     API_APP_IMAGE_NAME = "api-app"
 
-    DEPLOYMENT_FILE = "deployment.yml"
-    SERVICE_FILE = "service.yml"
-    NAMESPACE = "default"
-
-    // Path to kubeconfig mounted in Jenkins container
-    KUBECONFIG = "/root/.kube/config"
+    // Container names
+    WEB_APP_CONTAINER_NAME = "web-app-container"
+    API_APP_CONTAINER_NAME = "api-app-container"
   }
 
   stages {
@@ -28,10 +27,10 @@ pipeline {
           echo "Building Docker Images..."
 
           # Build API App image
-          docker build -t $API_APP_IMAGE_NAME:latest ./crud-api
+          docker build -t $API_APP_IMAGE_NAME:latest ./crud-api/Dockerfile.ApiApp
 
           # Build Web App image
-          docker build -t $WEB_APP_IMAGE_NAME:latest .
+          docker build -t $WEB_APP_IMAGE_NAME:latest Dockerfile.WebApp
         '''
       }
     }
@@ -53,28 +52,23 @@ pipeline {
       }
     }
 
-    stage('Deploy to Kubernetes') {
-      steps {
-        sh '''
-          set -e
-          echo "Deploying to Kubernetes..."
+    stage('Deploy Containers') {
+        steps {
+            sh '''
+                # Get or create internal network
+                NETWORK_NAME=$(docker network ls --format "{{.Name}}" | grep internal-network || echo "$REGISTRY"_internal-network)
+                docker network inspect $NETWORK_NAME >/dev/null 2>&1 || docker network create $NETWORK_NAME
+                echo "Using network: $NETWORK_NAME"
 
-          # Ensure kubeconfig is set
-          export KUBECONFIG=$KUBECONFIG
+                # Remove old containers
+                docker rm -f $API_APP_CONTAINER_NAME || true
+                docker rm -f $WEB_APP_CONTAINER_NAME || true
 
-          # Update deployment file with latest images
-          sed -i "s|image: .*/api-app:.*|image: $REGISTRY/$API_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
-          sed -i "s|image: .*/web-app:.*|image: $REGISTRY/$WEB_APP_IMAGE_NAME:latest|g" $DEPLOYMENT_FILE
-
-          # Apply manifests
-          kubectl apply -f $DEPLOYMENT_FILE --namespace=$NAMESPACE
-          kubectl apply -f $SERVICE_FILE --namespace=$NAMESPACE
-
-          # Wait for rollout to complete
-          kubectl rollout status deployment/api-app --namespace=$NAMESPACE --timeout=2m
-          kubectl rollout status deployment/web-app --namespace=$NAMESPACE --timeout=2m
-        '''
-      }
+                # Run new containers
+                docker run -d --name $API_APP_CONTAINER_NAME --network $NETWORK_NAME -p 3000:3000 $REGISTRY/$API_APP_IMAGE_NAME:latest
+                docker run -d --name $WEB_APP_CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$WEB_APP_IMAGE_NAME:latest
+            '''
+        }
     }
   }
 }

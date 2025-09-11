@@ -40,32 +40,14 @@ services:
       dockerfile: Dockerfile.Jenkins
     container_name: jenkins
     restart: unless-stopped
-    user: root  # Needed for Docker and kubectl access
+    user: root
     ports:
       - "8080:8080"      # Jenkins UI
       - "50000:50000"    # Jenkins agent port
     volumes:
-      # Jenkins data
       - jenkins_home:/var/jenkins_home
-
-      # Docker socket to run Docker commands inside Jenkins
-      - /var/run/docker.sock:/var/run/docker.sock
-
-      # Jenkins pipeline scripts or jobs
-      - ./jenkins:/jenkins
-
-      # Kube config (read-only)
-      - /Users/muayad/.kube:/home/jenkins/.kube:ro
-
-      # Minikube profiles and certs (read-only)
-      - /Users/muayad/.minikube:/home/jenkins/.minikube:ro
-
-      - /Users/muayad/.kube/config:/var/jenkins_home/.kube/config:ro
-
-    environment:
-      - KUBECONFIG=/root/.kube/config
-      - DOCKER_HOST=unix:///var/run/docker.sock
-
+      - /var/run/docker.sock:/var/run/docker.sock  # Allow Jenkins to use Docker on the host
+      - ./jenkins:/jenkins                         # Optional: Jenkins pipeline files or jobs
     networks:
       - internal-network
 
