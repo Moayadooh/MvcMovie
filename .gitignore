@@ -32,7 +32,7 @@ artifacts/
 # ASP.NET Core
 wwwroot/dist/
 # wwwroot/lib/
-appsettings.Development.json
+# appsettings.Development.json
 appsettings.Local.json
 secrets.json
 
@@ -95,5 +95,3 @@ global.json.user
 
 # Ignore dump files
 *.dmp
-
-node_modules
