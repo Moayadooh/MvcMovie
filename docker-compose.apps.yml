@@ -32,6 +32,6 @@ services:
     container_name: "${WEB_APP_CONTAINER_NAME}"
     networks:
       - internal-network
-    ports:
-      - "5005:5005"
+    # ports:
+    #   - "5005:5005"
     restart: always
