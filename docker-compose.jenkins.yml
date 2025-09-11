@@ -1,5 +1,13 @@
+networks:
+  internal-network:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+  registry-data:
+
 services:
-  # ✅ Local Docker Registry
+  # Local Docker Registry
   registry:
     image: registry:2
     container_name: local-registry
@@ -11,7 +19,7 @@ services:
     networks:
       - internal-network
 
-  # ✅ Jenkins
+  # Jenkins
   jenkins:
     build:
       context: .
@@ -28,11 +36,3 @@ services:
       - ./jenkins:/jenkins                         # Optional: Jenkins pipeline files or jobs
     networks:
       - internal-network
-
-networks:
-  internal-network:
-    driver: bridge
-
-volumes:
-  jenkins_home:
-  registry-data:

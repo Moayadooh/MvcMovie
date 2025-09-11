@@ -7,10 +7,6 @@ pipeline {
     // Images names
     WEB_APP_IMAGE_NAME = "web-app"
     API_APP_IMAGE_NAME = "api-app"
-
-    // Container names
-    WEB_APP_CONTAINER_NAME = "web-app-container"
-    API_APP_CONTAINER_NAME = "api-app-container"
   }
 
   stages {
@@ -56,10 +52,10 @@ pipeline {
       steps {
           sh '''
               echo "Bringing down old containers..."
-              docker compose -f docker-compose.apps.yml down
+              docker compose -f docker-compose.nginx.yml down
 
               echo "Deploying new containers..."
-              docker compose -f docker-compose.apps.yml up -d --build
+              docker compose -f docker-compose.nginx.yml up -d --build
           '''
       }
     }

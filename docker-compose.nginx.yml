@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Nginx
-    container_name: Nginx
+    container_name: nginx-container
     depends_on:
       - api-app
       - web-app
@@ -19,19 +19,15 @@ services:
       - "443:443"
 
   api-app:
-    image: "${REGISTRY}/${API_APP_IMAGE_NAME}:latest"
-    container_name: "${API_APP_CONTAINER_NAME}"
+    image: "${REGISTRY}/api-app:latest"
+    container_name: "api-app-container"
     networks:
       - internal-network
-    # ports:
-    #   - "3000:3000"
     restart: always
 
   web-app:
-    image: "${REGISTRY}/${WEB_APP_IMAGE_NAME}:latest"
-    container_name: "${WEB_APP_CONTAINER_NAME}"
+    image: "${REGISTRY}/web-app:latest"
+    container_name: "web-app-container"
     networks:
       - internal-network
-    # ports:
-    #   - "5005:5005"
     restart: always
