@@ -1,5 +1,3 @@
-version: '3.9'
-
 networks:
   internal-network:
     name: "${REGISTRY}_internal-network"
