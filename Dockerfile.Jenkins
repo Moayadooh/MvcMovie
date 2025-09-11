@@ -6,7 +6,7 @@ USER root
 
 # Install recommended packages (optional)
 RUN apt-get update && \
-    apt-get install -y git curl vim && \
+    apt-get install -y git curl vim docker.io  && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
