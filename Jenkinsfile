@@ -52,21 +52,14 @@ pipeline {
       }
     }
 
-    stage('Deploy Containers') {
+    stage('Deploy Containers with Docker Compose') {
         steps {
             sh '''
-                # Get or create internal network
-                NETWORK_NAME=$(docker network ls --format "{{.Name}}" | grep internal-network || echo "$REGISTRY"_internal-network)
-                docker network inspect $NETWORK_NAME >/dev/null 2>&1 || docker network create $NETWORK_NAME
-                echo "Using network: $NETWORK_NAME"
+                echo "Bringing down old containers..."
+                docker compose -f docker-compose.apps.yml down
 
-                # Remove old containers
-                docker rm -f $API_APP_CONTAINER_NAME || true
-                docker rm -f $WEB_APP_CONTAINER_NAME || true
-
-                # Run new containers
-                docker run -d --name $API_APP_CONTAINER_NAME --network $NETWORK_NAME -p 3000:3000 $REGISTRY/$API_APP_IMAGE_NAME:latest
-                docker run -d --name $WEB_APP_CONTAINER_NAME --network $NETWORK_NAME -p 5005:5005 $REGISTRY/$WEB_APP_IMAGE_NAME:latest
+                echo "Deploying new containers..."
+                docker compose -f docker-compose.apps.yml up -d --build
             '''
         }
     }

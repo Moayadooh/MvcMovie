@@ -87,7 +87,7 @@ _ReSharper*/
 *.DotSettings.user
 
 # Ignore environment files
-.env
+# .env
 .env.*
 
 # Ignore global.json user settings
