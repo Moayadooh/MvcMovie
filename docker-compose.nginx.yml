@@ -17,6 +17,19 @@ services:
     ports:
       - "80:80"
       - "443:443"
+  
+  redis:
+    build:
+      context: .
+      dockerfile: Dockerfile.Redis
+    container_name: redis-container
+    networks:
+      - internal-network
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
+    restart: always
 
   api-app:
     image: "${REGISTRY}/api-app:latest"

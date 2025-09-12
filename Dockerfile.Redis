@@ -1,0 +1,8 @@
+# Use the official Redis base image
+FROM redis:7.4-alpine
+
+# Expose Redis default port
+EXPOSE 6379
+
+# Start Redis
+CMD ["redis-server"]
