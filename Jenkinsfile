@@ -52,10 +52,10 @@ pipeline {
       steps {
           sh '''
               echo "Bringing down old containers..."
-              docker compose -f docker-compose.nginx.yml down
+              docker compose -f docker-compose.yml down
 
               echo "Deploying new containers..."
-              docker compose -f docker-compose.nginx.yml up -d --build
+              docker compose -f docker-compose.yml up -d --build
           '''
       }
     }
