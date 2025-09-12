@@ -1,14 +1,14 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Get Redis connection string from configuration
-var redisConnection = builder.Configuration.GetConnectionString("Redis");
+// // Get Redis connection string from configuration
+// var redisConnection = builder.Configuration.GetConnectionString("Redis");
 
-// Register Redis distributed cache
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = redisConnection; // e.g. "localhost:6379"
-    options.InstanceName = "MyAppSessions:"; // Optional prefix for keys
-});
+// // Register Redis distributed cache
+// builder.Services.AddStackExchangeRedisCache(options =>
+// {
+//     options.Configuration = redisConnection; // e.g. "localhost:6379"
+//     options.InstanceName = "MyAppSessions:"; // Optional prefix for keys
+// });
 
 // Register session services
 builder.Services.AddSession(options =>
