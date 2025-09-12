@@ -1,5 +1,23 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Get Redis connection string from configuration
+var redisConnection = builder.Configuration.GetConnectionString("Redis");
+
+// Register Redis distributed cache
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = redisConnection; // e.g. "localhost:6379"
+    options.InstanceName = "MyAppSessions:"; // Optional prefix for keys
+});
+
+// Register session services
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Required for GDPR compliance
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -17,6 +35,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Enable session before `UseAuthorization`
+app.UseSession();
 
 app.UseAuthorization();
 

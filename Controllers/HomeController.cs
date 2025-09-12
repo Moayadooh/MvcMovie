@@ -33,6 +33,9 @@ public class HomeController : Controller
         var content = await response.Content.ReadAsStringAsync();
         var items = JsonSerializer.Deserialize<List<Item>>(content);
 
+        HttpContext.Session.SetString("UserName", "Muayad");
+        HttpContext.Session.SetInt32("UserId", 123);
+
         return View(items);
     }
 
