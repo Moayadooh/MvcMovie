@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.DataProtection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Get Redis connection string from configuration
@@ -17,6 +19,14 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; // Required for GDPR compliance
 });
+
+// Add Data Protection - Centralize Keys in Redis
+builder.Services.AddDataProtection()
+    .PersistKeysToStackExchangeRedis(() =>
+    {
+        var connection = StackExchange.Redis.ConnectionMultiplexer.Connect(redisConnection!);
+        return connection.GetDatabase();
+    }, "MyApp-DataProtection-Keys");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
