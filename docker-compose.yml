@@ -56,7 +56,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
-      - ./prometheus-stack/prometheus/prometheus.yml:/etc/prometheus-stack/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
@@ -72,7 +72,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./prometheus-stack/grafana/provisioning:/etc/prometheus-stack/grafana/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning
     ports:
       - "3001:3000"
     networks:
