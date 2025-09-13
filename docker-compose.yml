@@ -3,6 +3,9 @@ networks:
     name: "${REGISTRY}_internal-network"
     driver: bridge
 
+volumes:
+  grafana-data:
+  
 services:
   nginx:
     build:
