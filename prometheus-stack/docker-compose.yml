@@ -9,7 +9,7 @@ services:
     ports:
       - "9090:9090"
     networks:
-      - monitoring
+      - internal-network
 
   grafana:
     image: grafana/grafana:latest
@@ -23,7 +23,7 @@ services:
     ports:
       - "3001:3000"
     networks:
-      - monitoring
+      - internal-network
     depends_on:
       - prometheus
 
@@ -41,7 +41,7 @@ services:
     ports:
       - "9100:9100"
     networks:
-      - monitoring
+      - internal-network
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -54,10 +54,11 @@ services:
     ports:
       - "8081:8080"
     networks:
-      - monitoring
+      - internal-network
 
 networks:
-  monitoring:
+  internal-network:
+    name: "${REGISTRY}_internal-network"
     driver: bridge
 
 volumes:
