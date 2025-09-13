@@ -27,7 +27,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Items()
     {
         HttpClient httpClient = new();
-        var response = await httpClient.GetAsync("http://api-app:3001/items");
+        var response = await httpClient.GetAsync("http://api-app:3000/items");
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();

@@ -15,7 +15,7 @@ scrape_configs:
   # Scrape cAdvisor for Docker container metrics
   - job_name: "cadvisor"
     static_configs:
-      - targets: ["cadvisor:8081"]
+      - targets: ["cadvisor:8080"]
 
   - job_name: "api-app"
     static_configs:
