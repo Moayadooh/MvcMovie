@@ -1,0 +1,4 @@
+# cadvisor/Dockerfile
+FROM gcr.io/cadvisor/cadvisor:latest
+
+# Default CMD is already set in base image, so no extra steps required

@@ -1,0 +1,9 @@
+# node-exporter/Dockerfile
+FROM prom/node-exporter:latest
+
+# Set default command with custom flags
+CMD [
+  "--path.procfs=/host/proc",
+  "--path.sysfs=/host/sys",
+  "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($|/)"
+]

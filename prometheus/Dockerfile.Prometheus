@@ -1,0 +1,11 @@
+# prometheus/Dockerfile
+FROM prom/prometheus:latest
+
+# Set working directory
+WORKDIR /etc/prometheus
+
+# Copy custom configuration
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+
+# Set default command
+CMD ["--config.file=/etc/prometheus/prometheus.yml"]
