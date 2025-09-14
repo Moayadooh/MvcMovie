@@ -19,8 +19,8 @@ scrape_configs:
 
   - job_name: "api-app"
     static_configs:
-      - targets: ["api-app:3000"]
+      - targets: ["api-app-container:3000"]
 
   - job_name: "web-app"
     static_configs:
-      - targets: ["web-app:5005"]
+      - targets: ["web-app-container:5005"]
