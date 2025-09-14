@@ -10,6 +10,35 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// ===== PROMETHEUS METRICS SETUP =====
+const register = new client.Registry();
+
+// Collect default system metrics (CPU, memory, etc.)
+client.collectDefaultMetrics({ register });
+
+// Custom counter for HTTP requests
+const httpRequestCounter = new client.Counter({
+  name: 'http_requests_total',
+  help: 'Total number of HTTP requests',
+  labelNames: ['method', 'route', 'status']
+});
+register.registerMetric(httpRequestCounter);
+
+// Middleware to track requests
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    httpRequestCounter.inc({ method: req.method, route: req.path, status: res.statusCode });
+  });
+  next();
+});
+
+// Metrics endpoint
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+// =====================================
+
 // Initialize database
 const db = new sqlite3.Database('./local.db', (err) => {
   if (err) {

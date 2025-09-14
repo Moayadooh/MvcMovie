@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.DataProtection;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,13 @@ builder.Services.AddDataProtection()
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+// ===== PROMETHEUS METRICS =====
+// Expose /metrics endpoint
+app.UseMetricServer("/metrics");
+// Capture HTTP request metrics
+app.UseHttpMetrics();
+// =================================
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
