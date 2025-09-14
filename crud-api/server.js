@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const client = require('prom-client');
 
 const app = express();
 const PORT = 3000;
@@ -121,4 +122,5 @@ app.delete('/items/:id', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Metrics available at http://localhost:${PORT}/metrics`);
 });
