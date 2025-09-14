@@ -56,7 +56,7 @@ services:
     build:
       context: ./prometheus
       dockerfile: Dockerfile.Prometheus
-    container_name: prometheus
+    container_name: prometheus-container
     ports:
       - "9090:9090"
     networks:
@@ -66,7 +66,7 @@ services:
     build:
       context: ./grafana
       dockerfile: Dockerfile.Grafana
-    container_name: grafana
+    container_name: grafana-container
     volumes:
       - grafana-data:/var/lib/grafana
     ports:
@@ -80,7 +80,7 @@ services:
     build:
       context: ./node-exporter
       dockerfile: Dockerfile.NodeExporter
-    container_name: node-exporter
+    container_name: node-exporter-container
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -98,7 +98,7 @@ services:
     build:
       context: ./cadvisor
       dockerfile: Dockerfile.Cadvisor
-    container_name: cadvisor
+    container_name: cadvisor-container
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
