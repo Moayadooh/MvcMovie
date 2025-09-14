@@ -2,9 +2,9 @@ FROM node:24-alpine3.21
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install && npm install prom-client
 COPY . .
 
 EXPOSE 3000
 
-ENTRYPOINT ["npm", "start"]
+CMD ["npm", "start"]
